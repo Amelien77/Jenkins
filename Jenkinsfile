@@ -37,6 +37,9 @@ pipeline {
             }
         }
 
+
+
+    stages {
         stage('Deploy to Dev') {
             steps {
                 script {
@@ -50,20 +53,25 @@ pipeline {
                             mkdir -p $HOME/.kube
                             cp $KUBECONFIG $HOME/.kube/config
 
-                            // Sécuriser le fichier kubeconfig
+                            # Sécuriser le fichier kubeconfig
                             chmod 600 $HOME/.kube/config
 
-                            // Vérifier le contenu du fichier kubeconfig
+                            # Vérifier le contenu du fichier kubeconfig
                             ls $HOME/.kube/
                             cat $HOME/.kube/config
 
-                            // Déployer avec Helm
+                            # Déployer avec Helm
                             helm upgrade --install release ./helm -f ./helm/values-dev.yaml -n $KUBE_NAMESPACE_DEV
                         '''
                     }
                 }
             }
         }
+
+
+
+
+
         stage('Deploy to Staging') {
             steps {
                 script {
