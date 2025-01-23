@@ -1,11 +1,10 @@
-
 pipeline {
     agent any
 
     environment {
         // Variables d'environnement pour Docker et Kubernetes
-        DOCKER_IMAGE = 'amelien/cast_service'
-        DOCKER_IMAGE_MOVIE = 'amelien/movie_service'
+        DOCKER_IMAGE = 'ameliendevops/movie-cast-service'
+        DOCKER_IMAGE_MOVIE = 'ameliendevops/movie-cast-service'
         KUBE_NAMESPACE_DEV = 'dev'
         KUBE_NAMESPACE_STAGING = 'staging'
         KUBE_NAMESPACE_QA = 'qa'
