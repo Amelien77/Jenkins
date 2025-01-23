@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cast-service
+  labels:
+    app: cast-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cast-service
+  template:
+    metadata:
+      labels:
+        app: cast-service
+    spec:
+      containers:
+        - name: cast-service
+          image: "{{ .Values.image.castService }}" # Utilise la variable de values.yaml
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://{{ .Values.database.castDb.user }}:{{ .Values.database.castDb.password }}@cast-db/{{ .Values.database.castDb.name }}"
+            - name: API_URL
+              value: "http://cast-service:8000"

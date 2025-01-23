@@ -1,0 +1,29 @@
+# Paramètres d'images Docker
+image:
+  castService: "jenkins_devops_exams_cast_service:latest"
+  movieService: "jenkins_devops_exams_movie_service:latest"
+
+# Paramètres des services (les ports sont définis pour chaque environnement ci-dessous)
+service:
+  castService:
+    port: 80               # Port interne du service
+    targetPort: 8000       # Port du conteneur
+    nodePort: 30002        # Ce port sera redéfini dans les fichiers d'environnement
+
+  movieService:
+    port: 80               # Port interne du service
+    targetPort: 8000       # Port du conteneur
+    nodePort: 30003        # Ce port sera redéfini dans les fichiers d'environnement
+
+# Paramètres des bases de données
+database:
+  castDb:
+    user: "ameliendb"
+    password: "ameliendb"
+    name: "cast_db"
+    host: "cast-db"       # Nom de l'hôte de la base de données
+  movieDb:
+    user: "ameliendb"
+    password: "ameliendb"
+    name: "movie_db"
+    host: "movie-db"      # Nom de l'hôte de la base de données
