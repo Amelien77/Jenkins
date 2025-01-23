@@ -42,7 +42,7 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement dev
                     echo 'Deploying to Dev...'
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
                         sh '''
                         rm -Rf .kube
                         mkdir .kube
@@ -59,7 +59,7 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement staging
                     echo 'Deploying to Staging...'
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
                         sh '''
                         rm -Rf .kube
                         mkdir .kube
@@ -76,7 +76,7 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement QA
                     echo 'Deploying to QA...'
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
                         sh '''
                         rm -Rf .kube
                         mkdir .kube
@@ -97,7 +97,7 @@ pipeline {
                 script {
                     // Déploiement en prod
                     echo 'Deploying to Prod...'
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
                         sh '''
                         rm -Rf .kube
                         mkdir .kube
