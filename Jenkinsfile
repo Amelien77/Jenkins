@@ -37,17 +37,29 @@ pipeline {
             }
         }
 
+    stages {
         stage('Deploy to Dev') {
             steps {
                 script {
-                    // Déploiement dans l'environnement dev
                     echo 'Deploying to Dev...'
+                    
+                    // Utilisation du fichier kubeconfig récupéré à partir du secret 'config'
                     withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
+                        // Débogage : Vérifier que le fichier kubeconfig est bien récupéré
+                        echo "Kubeconfig path: $KUBECONFIG"
+                        
+                        // Déployer dans l'environnement Dev
                         sh '''
-                        rm -Rf .kube
-                        mkdir .kube
-                        cat $KUBECONFIG > .kube/config
-                        helm upgrade --install release ./helm -f ./helm/values-dev.yaml -n $KUBE_NAMESPACE_DEV
+                            echo "Vérification du fichier kubeconfig"
+                            cat $KUBECONFIG  # Affiche le contenu du kubeconfig pour vérification
+                            
+                            // Créer le répertoire .kube et copier le fichier kubeconfig dedans
+                            rm -Rf .kube
+                            mkdir -p .kube
+                            cp $KUBECONFIG .kube/config
+                            
+                            // Déployer avec Helm
+                            helm upgrade --install release ./helm -f ./helm/values-dev.yaml -n $KUBE_NAMESPACE_DEV
                         '''
                     }
                 }
