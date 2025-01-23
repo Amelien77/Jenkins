@@ -9,9 +9,6 @@ pipeline {
         KUBE_NAMESPACE_STAGING = 'staging'
         KUBE_NAMESPACE_QA = 'qa'
         KUBE_NAMESPACE_PROD = 'prod'
-        
-        // Utilisation du secret Kubernetes
-        KUBECONFIG = credentials('KUBECONFIG') // Le fichier kubeconfig est injecté ici
     }
 
     stages {
@@ -45,7 +42,10 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement dev
                     echo 'Deploying to Dev...'
-                    sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/dev-deployment.yaml"
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/dev-deployment.yaml"
+                        sh "helm upgrade --install release ./helm -f helm/values-dev.yaml -n $KUBE_NAMESPACE_DEV"
+                    }
                 }
             }
         }
@@ -55,7 +55,10 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement staging
                     echo 'Deploying to Staging...'
-                    sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/staging-deployment.yaml"
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/staging-deployment.yaml"
+                        sh "helm upgrade --install release ./helm -f helm/values-staging.yaml -n $KUBE_NAMESPACE_STAGING"
+                    }
                 }
             }
         }
@@ -65,7 +68,10 @@ pipeline {
                 script {
                     // Déploiement dans l'environnement QA
                     echo 'Deploying to QA...'
-                    sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/qa-deployment.yaml"
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/qa-deployment.yaml"
+                        sh "helm upgrade --install release ./helm -f helm/values-qa.yaml -n $KUBE_NAMESPACE_QA"
+                    }
                 }
             }
         }
@@ -79,7 +85,10 @@ pipeline {
                 script {
                     // Déploiement en prod
                     echo 'Deploying to Prod...'
-                    sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/prod-deployment.yaml"
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=$KUBECONFIG apply -f ./k8s/prod-deployment.yaml"
+                        sh "helm upgrade --install release ./helm -f helm/values-prod.yaml -n $KUBE_NAMESPACE_PROD"
+                    }
                 }
             }
         }
