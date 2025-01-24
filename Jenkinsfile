@@ -40,7 +40,7 @@ pipeline {
 
         stage('Deploy to Dev') {
             environment {
-                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config
+                KUBECONFIG = credentials("config")
             }
             steps {
                 script {
@@ -60,7 +60,7 @@ pipeline {
 
         stage('Deploy to Staging') {
             environment {
-                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config
+                KUBECONFIG = credentials("config")
             }
             steps {
                 script {
@@ -78,10 +78,9 @@ pipeline {
             }
         }
 
-
         stage('Deploy to QA') {
             environment {
-                KUBECONFIG = credentials("config") // récupération du kubeconfig à partir du fichier secret
+                KUBECONFIG = credentials("config")
             }
             steps {
                 script {
@@ -104,7 +103,7 @@ pipeline {
                 branch 'master'
             }
             environment {
-                KUBECONFIG = credentials("config") // récupération du kubeconfig à partir du fichier secret
+                KUBECONFIG = credentials("config")
             }
             steps {
                 input 'Do you want to deploy to Prod?'
@@ -122,6 +121,7 @@ pipeline {
                 }
             }
         }
+    } 
 
     post {
         success {
