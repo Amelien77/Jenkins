@@ -78,17 +78,23 @@ pipeline {
             }
         }
 
+
         stage('Deploy to QA') {
+            environment {
+                KUBECONFIG = credentials("config") // récupération du kubeconfig à partir du fichier secret
+            }
             steps {
                 script {
-                    // Déploiement dans l'environnement QA
-                    echo 'Deploying to QA...'
-                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
-                        // Copier le fichier kubeconfig dans un répertoire temporaire
-                        sh "cp $KUBECONFIG /tmp/kubeconfig.yaml"
-                        sh "kubectl --kubeconfig=/tmp/kubeconfig.yaml apply -f ./k8s/qa-deployment.yaml"
-                        sh "helm upgrade --install release ./helm -f helm/values-qa.yaml -n $KUBE_NAMESPACE_QA"
-                    }
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    cp helm/values-qa.yaml values-qa.yml
+                    cat values-qa.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-qa.yml
+                    helm upgrade --install release ./helm --values=values-qa.yml --namespace qa
+                    '''
                 }
             }
         }
@@ -97,21 +103,25 @@ pipeline {
             when {
                 branch 'master'
             }
+            environment {
+                KUBECONFIG = credentials("config") // récupération du kubeconfig à partir du fichier secret
+            }
             steps {
                 input 'Do you want to deploy to Prod?'
                 script {
-                    // Déploiement en prod
-                    echo 'Deploying to Prod...'
-                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
-                        // Copier le fichier kubeconfig dans un répertoire temporaire
-                        sh "cp $KUBECONFIG /tmp/kubeconfig.yaml"
-                        sh "kubectl --kubeconfig=/tmp/kubeconfig.yaml apply -f ./k8s/prod-deployment.yaml"
-                        sh "helm upgrade --install release ./helm -f helm/values-prod.yaml -n $KUBE_NAMESPACE_PROD"
-                    }
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    cp helm/values-prod.yaml values-prod.yml
+                    cat values-prod.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-prod.yml
+                    helm upgrade --install release ./helm --values=values-prod.yml --namespace prod
+                    '''
                 }
             }
         }
-    }
 
     post {
         success {
