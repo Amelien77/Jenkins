@@ -5,7 +5,7 @@ pipeline {
         // Variables d'environnement pour Docker et Kubernetes
         DOCKER_IMAGE = 'ameliendevops/movie-cast-service'
         DOCKER_IMAGE_MOVIE = 'ameliendevops/movie-cast-service'
-        DOCKER_TAG = "v.${BUILD_ID}.0"   
+        DOCKER_TAG = "v.${BUILD_ID}.0"
         KUBE_NAMESPACE_DEV = 'dev'
         KUBE_NAMESPACE_STAGING = 'staging'
         KUBE_NAMESPACE_QA = 'qa'
@@ -39,50 +39,43 @@ pipeline {
         }
 
         stage('Deploy to Dev') {
-        environment
-        {
-        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on >
-        }
+            environment {
+                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config
+            }
             steps {
                 script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                ls
-                cat $KUBECONFIG > .kube/config
-                cp helm/values.yaml values-dev.yml
-                cat values-dev.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install release ./kubernetes --values=values-dev.yml --namespace dev
-                '''
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    cp helm/values-dev.yaml values-dev.yml
+                    cat values-dev.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-dev.yml
+                    helm upgrade --install release ./kubernetes --values=values-dev.yml --namespace dev
+                    '''
                 }
             }
-
         }
-
-
-
 
         stage('Deploy to Staging') {
-        environment
-        {
-        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on >
-        }
+            environment {
+                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config
+            }
             steps {
                 script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                ls
-                cat $KUBECONFIG > .kube/config
-                cp helm/values.yaml values-staging.yml
-                cat values-staging.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install release ./kubernetes --values=values-staging.yml --namespace staging
-                '''
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    cp helm/values-staging.yaml values-staging.yml
+                    cat values-staging.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-staging.yml
+                    helm upgrade --install release ./kubernetes --values=values-staging.yml --namespace staging
+                    '''
                 }
             }
-
         }
 
         stage('Deploy to QA') {
