@@ -5,6 +5,7 @@ pipeline {
         // Variables d'environnement pour Docker et Kubernetes
         DOCKER_IMAGE = 'ameliendevops/movie-cast-service'
         DOCKER_IMAGE_MOVIE = 'ameliendevops/movie-cast-service'
+        DOCKER_TAG = "v.${BUILD_ID}.0"   
         KUBE_NAMESPACE_DEV = 'dev'
         KUBE_NAMESPACE_STAGING = 'staging'
         KUBE_NAMESPACE_QA = 'qa'
@@ -40,7 +41,7 @@ pipeline {
         stage('Deploy to Dev') {
         environment
         {
-        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on >
         }
             steps {
                 script {
@@ -49,10 +50,10 @@ pipeline {
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                cp fastapi/values.yaml values.yml
-                cat values.yml
+                cp helm/values.yaml values-dev.yml
+                cat values-dev.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install release fastapi --values=values.yml --namespace dev
+                helm upgrade --install release ./kubernetes --values=values-dev.yml --namespace dev
                 '''
                 }
             }
@@ -63,18 +64,25 @@ pipeline {
 
 
         stage('Deploy to Staging') {
+        environment
+        {
+        KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on >
+        }
             steps {
                 script {
-                    // Déploiement dans l'environnement staging
-                    echo 'Deploying to Staging...'
-                    withCredentials([file(credentialsId: 'config', variable: 'KUBECONFIG')]) {
-                        // Copier le fichier kubeconfig dans un répertoire temporaire
-                        sh "cp $KUBECONFIG /tmp/kubeconfig.yaml"
-                        sh "kubectl --kubeconfig=/tmp/kubeconfig.yaml apply -f ./k8s/staging-deployment.yaml"
-                        sh "helm upgrade --install release ./helm -f helm/values-staging.yaml -n $KUBE_NAMESPACE_STAGING"
-                    }
+                sh '''
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cp helm/values.yaml values-staging.yml
+                cat values-staging.yml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                helm upgrade --install release ./kubernetes --values=values-staging.yml --namespace staging
+                '''
                 }
             }
+
         }
 
         stage('Deploy to QA') {
