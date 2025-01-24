@@ -52,7 +52,7 @@ pipeline {
                     cp helm/values-dev.yaml values-dev.yml
                     cat values-dev.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-dev.yml
-                    helm upgrade --install release ./kubernetes --values=values-dev.yml --namespace dev
+                    helm upgrade --install release ./helm --values=values-dev.yml --namespace dev
                     '''
                 }
             }
@@ -72,7 +72,7 @@ pipeline {
                     cp helm/values-staging.yaml values-staging.yml
                     cat values-staging.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values-staging.yml
-                    helm upgrade --install release ./kubernetes --values=values-staging.yml --namespace staging
+                    helm upgrade --install release ./helm --values=values-staging.yml --namespace staging
                     '''
                 }
             }
