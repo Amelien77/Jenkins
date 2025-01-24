@@ -99,7 +99,6 @@ pipeline {
         }
 
         stage('Deploy to Prod') {
-            }
             environment {
                 KUBECONFIG = credentials("config")
             }
