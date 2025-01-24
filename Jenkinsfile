@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         // Variables d'environnement pour Docker et Kubernetes
-        DOCKER_IMAGE = 'ameliendevops/movie-cast-service'
-        DOCKER_IMAGE_MOVIE = 'ameliendevops/movie-cast-service'
+        DOCKER_IMAGE_CAST = 'ameliendevops/cast-service'
+        DOCKER_IMAGE_MOVIE = 'ameliendevops/movie-service'
         DOCKER_TAG = "v.${BUILD_ID}.0"
         KUBE_NAMESPACE_DEV = 'dev'
         KUBE_NAMESPACE_STAGING = 'staging'
@@ -31,9 +31,8 @@ pipeline {
                     echo 'Pushing Docker images to DockerHub...'
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "docker push $DOCKER_IMAGE:latest"
-                        sh "docker push $DOCKER_IMAGE_MOVIE:latest"
-                    }
+                        sh "docker push $DOCKER_IMAGE_CAST:$DOCKER_TAG"
+                        sh "docker push $DOCKER_IMAGE_MOVIE:$DOCKER_TAG"                    }
                 }
             }
         }
