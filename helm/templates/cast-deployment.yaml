@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cast-service
-          image: "{{ .Values.image.castService }}" # Utilise la variable de values.yaml
+          image: "{{ .Values.image.castService }}"
           ports:
             - containerPort: 8000
           env:

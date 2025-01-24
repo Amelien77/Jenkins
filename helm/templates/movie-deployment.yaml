@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: movie-service
-          image: "{{ .Values.image.movieService }}" # Utilise la variable de values.yaml
+          image: "{{ .Values.image.movieService }}"
           ports:
             - containerPort: 8000
           env:

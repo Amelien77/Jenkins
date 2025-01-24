@@ -3,17 +3,17 @@ image:
   castService: "jenkins_devops_exams_cast_service:latest"
   movieService: "jenkins_devops_exams_movie_service:latest"
 
-# Paramètres des services (les ports sont définis pour chaque environnement ci-dessous)
+# Paramètres des services
 service:
   castService:
-    port: 80               # Port interne du service
-    targetPort: 8000       # Port du conteneur
-    nodePort: 30030        # Ce port sera redéfini dans les fichiers d'environnement
+    port: 80               
+    targetPort: 8000     
+    nodePort: 30030        
 
   movieService:
-    port: 80               # Port interne du service
-    targetPort: 8000       # Port du conteneur
-    nodePort: 30031        # Ce port sera redéfini dans les fichiers d'environnement
+    port: 80              
+    targetPort: 8000      
+    nodePort: 30031        
 
 # Paramètres des bases de données
 database:
@@ -21,9 +21,9 @@ database:
     user: "ameliendb"
     password: "ameliendb"
     name: "cast_db"
-    host: "cast-db"       # Nom de l'hôte de la base de données
+    host: "cast-db"       
   movieDb:
     user: "ameliendb"
     password: "ameliendb"
     name: "movie_db"
-    host: "movie-db"      # Nom de l'hôte de la base de données
+    host: "movie-db"      

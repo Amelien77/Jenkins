@@ -7,7 +7,7 @@ spec:
     app: cast-service
   ports:
     - protocol: TCP
-      port: {{ .Values.service.castService.port }}  # Utilise la valeur de values.yaml
-      targetPort: {{ .Values.service.castService.targetPort }}  # Port du conteneur
-      nodePort: {{ .Values.service.castService.nodePort }}  # Port NodePort
+      port: {{ .Values.service.castService.port }}  
+      targetPort: {{ .Values.service.castService.targetPort }}  
+      nodePort: {{ .Values.service.castService.nodePort }} 
   type: NodePort
